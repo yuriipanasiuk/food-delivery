@@ -1,6 +1,7 @@
 const httpError = require('http-errors');
 const Mac = require('../models/mac');
 const Basket = require('../models/basket');
+const Order = require('../models/order');
 
 const getGoods = async (req, res, next) => {
   try {
@@ -71,10 +72,54 @@ const deleteGood = async (req, res, next) => {
   }
 };
 
+const submitGoods = async (req, res, next) => {
+  const { name, email, phone, address, totalPrice } = req.body;
+  try {
+    const basketGoods = await Basket.find({});
+
+    if (!basketGoods) {
+      return next(httpError(404, 'Basket is empty'));
+    }
+
+    const isExisy = await Order.findOne({ email });
+
+    if (isExisy) {
+      return next(httpError(400, 'Good already submitted'));
+    }
+
+    const makeOrder = await Order.create({
+      name,
+      email,
+      phone,
+      address,
+      totalPrice,
+      data: {
+        basketGoods,
+      },
+    });
+
+    res.json(makeOrder);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getOrderHistory = async (req, res, next) => {
+  try {
+    const result = await Order.find({});
+
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getGoods,
   getGoodsById,
   addGood,
   deleteGood,
   getBasketGoods,
+  submitGoods,
+  getOrderHistory,
 };

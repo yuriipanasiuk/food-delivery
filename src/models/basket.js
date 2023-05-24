@@ -9,8 +9,9 @@ const basketSchema = new Schema(
       type: String,
     },
     price: {
-      type: String,
+      type: Number,
     },
+
     owner: {
       type: Schema.Types.ObjectId,
       ref: 'user',
