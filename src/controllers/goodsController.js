@@ -58,15 +58,15 @@ const getBasketGoods = async (req, res, next) => {
 };
 
 const deleteGood = async (req, res, next) => {
-  const { id } = req.body;
+  const { goodId } = req.params;
   try {
-    const good = await Basket.findByIdAndRemove(id);
+    const good = await Basket.findByIdAndRemove(goodId);
 
     if (!good) {
       return next(httpError(404, 'Not found'));
     }
 
-    res.json({ messahe: 'good deleted' });
+    res.json({ message: 'good deleted' });
   } catch (error) {
     next(error);
   }
@@ -93,9 +93,7 @@ const submitGoods = async (req, res, next) => {
       phone,
       address,
       totalPrice,
-      data: {
-        basketGoods,
-      },
+      data: basketGoods,
     });
 
     res.json(makeOrder);
@@ -114,6 +112,32 @@ const getOrderHistory = async (req, res, next) => {
   }
 };
 
+const updateGoodPrice = async (req, res, next) => {
+  const { goodId } = req.params;
+
+  try {
+    const result = await Basket.findByIdAndUpdate(goodId, req.body, { new: true });
+
+    if (!result) {
+      return next(httpError('404', 'Not found'));
+    }
+
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const clearBasket = async (req, res, next) => {
+  try {
+    await Basket.deleteMany({});
+
+    res.json({ message: 'cart empty' });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getGoods,
   getGoodsById,
@@ -122,4 +146,6 @@ module.exports = {
   getBasketGoods,
   submitGoods,
   getOrderHistory,
+  updateGoodPrice,
+  clearBasket,
 };

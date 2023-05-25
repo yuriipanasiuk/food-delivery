@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const validation = require('../../schema/validation');
-const { goodValidatioSchema } = require('../../schema/validationSchema');
+// const validation = require('../../schema/validation');
+// const { goodValidatioSchema } = require('../../schema/validationSchema');
+// validation(goodValidatioSchema),
 
 const {
   getGoods,
@@ -12,7 +13,7 @@ const {
 
 router.get('/', getGoods);
 router.get('/:goodId', getGoodsById);
-router.post('/', validation(goodValidatioSchema), addGood);
-router.delete('/', deleteGood);
+router.post('/', addGood);
+router.delete('/:goodId', deleteGood);
 
 module.exports = router;
