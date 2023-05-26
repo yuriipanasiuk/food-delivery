@@ -2,10 +2,21 @@ const httpError = require('http-errors');
 const Mac = require('../models/mac');
 const Basket = require('../models/basket');
 const Order = require('../models/order');
+const Drink = require('../models/drink');
 
 const getGoods = async (req, res, next) => {
   try {
     const result = await Mac.find({});
+
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getDrinks = async (req, res, next) => {
+  try {
+    const result = await Drink.find({});
 
     res.json(result);
   } catch (error) {
@@ -148,4 +159,5 @@ module.exports = {
   getOrderHistory,
   updateGoodPrice,
   clearBasket,
+  getDrinks,
 };
