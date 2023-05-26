@@ -40,6 +40,25 @@ const getDrinkById = async (req, res, next) => {
   }
 };
 
+const addDrinkToCart = async (req, res, next) => {
+  const { id } = req.body;
+
+  try {
+    const data = await Drink.findById(id);
+    const isExist = await Basket.findOne({ title: data.title });
+
+    if (isExist) {
+      return next(httpError(400, 'Good already exist in basket'));
+    }
+
+    const result = await Basket.create({ title: data.title, url: data.url, price: data.price });
+
+    res.status(201).json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
 const getGoodsById = async (req, res, next) => {
   const { goodId } = req.params;
 
@@ -177,4 +196,5 @@ module.exports = {
   clearBasket,
   getDrinks,
   getDrinkById,
+  addDrinkToCart,
 };
