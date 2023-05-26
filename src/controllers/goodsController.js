@@ -24,6 +24,22 @@ const getDrinks = async (req, res, next) => {
   }
 };
 
+const getDrinkById = async (req, res, next) => {
+  const { drinkId } = req.params;
+
+  try {
+    const drink = await Drink.findById(drinkId);
+
+    if (!drink) {
+      return next(httpError(404, 'Not found'));
+    }
+
+    res.json(drink);
+  } catch (error) {
+    next(error);
+  }
+};
+
 const getGoodsById = async (req, res, next) => {
   const { goodId } = req.params;
 
@@ -160,4 +176,5 @@ module.exports = {
   updateGoodPrice,
   clearBasket,
   getDrinks,
+  getDrinkById,
 };
